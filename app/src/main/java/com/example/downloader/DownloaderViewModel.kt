@@ -2,6 +2,7 @@ package com.example.downloader
 
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
@@ -28,9 +29,11 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
     private fun startDownload() {
-        val file = File(getApplication<Application>().filesDir, "largefile.zip")
-        val url = "https://r2---sn-npoeenee.gvt1.com/edgedl/android/repository/emulator-windows_x64-9529220.zip?met=1752645931,&mh=Av&pl=22&rms=ltu,ltu&shardbypass=sd&cm2rm=sn-2uja-5ube7z,sn-hjuk76&rrc=80,80&fexp=24352568,24352573,24352574&req_id=1961c7f64d8cbbd9&redirect_counter=2&cms_redirect=yes&cmsv=e&mip=39.60.147.236&mm=34&mn=sn-npoeenee&ms=ltu&mt=1752645651&mv=m&mvi=2&smhost=r1---sn-npoe7nz7.gvt1.com"
 
+        Log.d("Download", "inStartDownload")
+        val file = File(getApplication<Application>().filesDir, "newfiele.zip")
+        val url =
+          "https://r4---sn-npoe7ned.gvt1.com/edgedl/android/repository/emulator-linux_x64-12325540.zip?met=1752649127,&mh=B2&pl=22&rms=ltu,ltu&shardbypass=sd&cm2rm=sn-2uja-5ube7s,sn-hjuk7e&rrc=80,80&fexp=24352568,24352573,24352574&req_id=4eb6f071f5257020&redirect_counter=2&cms_redirect=yes&cmsv=e&mip=39.60.147.236&mm=34&mn=sn-npoe7ned&ms=ltu&mt=1752649006&mv=m&mvi=4&smhost=r1---sn-ojnpo5-58.gvt1.com"
         downloader = Downloader(application.applicationContext , url, file, chunkCount = 4)
 
         _isDownloading.value = true
@@ -40,15 +43,21 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
                 _progress.value = it
             },
             onComplete = {
+
+                Log.d("Download", "inComplete")
                 _isDownloading.value = false
             },
             onError = {
+
+                Log.d("Download", "inError")
                 _isDownloading.value = false
             }
         )
     }
 
     private fun pauseDownload() {
+
+        Log.d("Download", "inPaused")
         downloader?.pauseDownload()
         _isDownloading.value = false
     }

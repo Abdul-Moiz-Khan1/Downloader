@@ -31,7 +31,7 @@ fun DownloadScreen(viewModel: DownloaderViewModel = viewModel()) {
         )
 
         Button(onClick = {
-            Log.d("Download", "Button clicked")
+            Log.d("Download", "ButtonClicked")
             viewModel.startOrPauseDownload()
         }) {
             Text(if (isDownloading) "Pause" else "Start Download")
