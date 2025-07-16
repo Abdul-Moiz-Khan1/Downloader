@@ -30,8 +30,9 @@ class Downloader(
                 Log.d("Download_CLASS", "inTry")
                 fileSize = getContentLength(downloadUrl)
                 if (fileSize <= 0L) throw Exception("Invalid file size")
-                if (outputFile.exists() && outputFile.length() == fileSize) {
+                if (isFileFullyDownloaded()) {
                     withContext(Dispatchers.Main) {
+
                         onError(Exception("already downloaded"))
                         Toast.makeText(context, "File already downloaded", Toast.LENGTH_SHORT).show()
                     }
@@ -52,6 +53,13 @@ class Downloader(
                     progressArray[i] = downloadedBytes
 
                     val resumeStart = startByte + downloadedBytes
+
+                    val totalChunkBytes = endByte - startByte + 1
+                    val chunkProgress = downloadedBytes.toFloat() / totalChunkBytes
+
+                    withContext(Dispatchers.Main) {
+                        onChunkProgress(i, chunkProgress)
+                    }
 
                     if (resumeStart > endByte) {
                         Log.d("Download", "Chunk $i already downloaded. Skipping.")
@@ -130,6 +138,40 @@ class Downloader(
         connection.connect()
         return connection.contentLengthLong
     }
+    fun getChunkProgressList(): List<Float> {
+        if (!outputFile.exists() || fileSize <= 0L) return List(chunkCount) { 0f }
+
+        val chunkSize = fileSize / chunkCount
+        val list = mutableListOf<Float>()
+
+        for (i in 0 until chunkCount) {
+            val startByte = i * chunkSize
+            val endByte = if (i == chunkCount - 1) fileSize - 1 else (startByte + chunkSize - 1)
+
+            val downloaded = getDownloadedLength(outputFile, startByte, endByte)
+            val totalForThisChunk = endByte - startByte + 1
+            list.add(downloaded.toFloat() / totalForThisChunk)
+        }
+
+        return list
+    }
+    private fun isFileFullyDownloaded(): Boolean {
+        if (!outputFile.exists()) return false
+        if (fileSize <= 0L) return false
+
+        val chunkSize = fileSize / chunkCount
+        for (i in 0 until chunkCount) {
+            val startByte = i * chunkSize
+            val endByte = if (i == chunkCount - 1) fileSize - 1 else (startByte + chunkSize - 1)
+            val downloaded = getDownloadedLength(outputFile, startByte, endByte)
+            if (downloaded < (endByte - startByte + 1)) {
+                return false
+            }
+        }
+        return true
+    }
+
+
 }
 
 private fun getDownloadedLength(file: File, start: Long, end: Long): Long {
@@ -144,7 +186,6 @@ private fun getDownloadedLength(file: File, start: Long, end: Long): Long {
         val read = raf.read(buffer, 0, bytesToRead)
         if (read == -1) break
 
-        // Check if bytes are non-zero (i.e., downloaded)
         if (buffer.copyOf(read).all { it == 0.toByte() }) break
 
         downloaded += read

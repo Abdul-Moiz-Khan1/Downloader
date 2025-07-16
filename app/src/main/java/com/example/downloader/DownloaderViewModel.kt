@@ -36,8 +36,8 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
 
             downloader = Downloader(
                 context = application.applicationContext,
-                downloadUrl = "https://r4---sn-npoe7ned.gvt1.com/edgedl/android/repository/emulator-linux_x64-12325540.zip?met=1752649127,&mh=B2&pl=22&rms=ltu,ltu&shardbypass=sd&cm2rm=sn-2uja-5ube7s,sn-hjuk7e&rrc=80,80&fexp=24352568,24352573,24352574&req_id=4eb6f071f5257020&redirect_counter=2&cms_redirect=yes&cmsv=e&mip=39.60.147.236&mm=34&mn=sn-npoe7ned&ms=ltu&mt=1752649006&mv=m&mvi=4&smhost=r1---sn-ojnpo5-58.gvt1.com",
-                outputFile = File(getApplication<Application>().filesDir, "newf22.zip"),
+                downloadUrl = "https://vscode.download.prss.microsoft.com/dbazure/download/stable/5437499feb04f7a586f677b155b039bc2b3669eb/VSCodeUserSetup-x64-1.90.2.exe",
+                outputFile = File(getApplication<Application>().filesDir, "newf24243324209932.zip"),
                 chunkCount = 10,
                 onChunkProgress = { chunkIndex, chunkProgressValue ->
                     _chunkProgress.update { current ->
@@ -48,11 +48,12 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
                     }
                 }
             )
-
+            val resumeList = downloader?.getChunkProgressList() ?: emptyList()
+            _chunkProgress.value = resumeList
             downloader?.startDownload(
                 onProgress = { _progress.value = it },
                 onComplete = { _isDownloading.value = false },
-                onError = {  _isDownloading.value = false }
+                onError = { _isDownloading.value = false }
             )
         }
     }
