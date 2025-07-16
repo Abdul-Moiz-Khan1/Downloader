@@ -2,6 +2,7 @@ package com.example.downloader
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.RandomAccessFile
@@ -29,6 +30,13 @@ class Downloader(
                 Log.d("Download_CLASS", "inTry")
                 fileSize = getContentLength(downloadUrl)
                 if (fileSize <= 0L) throw Exception("Invalid file size")
+                if (outputFile.exists() && outputFile.length() == fileSize) {
+                    withContext(Dispatchers.Main) {
+                        onError(Exception("already downloaded"))
+                        Toast.makeText(context, "File already downloaded", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
 
                 val chunkSize = fileSize / chunkCount
                 val progressArray = LongArray(chunkCount) { 0L }

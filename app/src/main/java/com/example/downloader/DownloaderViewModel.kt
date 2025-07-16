@@ -52,7 +52,7 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
             downloader?.startDownload(
                 onProgress = { _progress.value = it },
                 onComplete = { _isDownloading.value = false },
-                onError = { _isDownloading.value = false }
+                onError = {  _isDownloading.value = false }
             )
         }
     }
