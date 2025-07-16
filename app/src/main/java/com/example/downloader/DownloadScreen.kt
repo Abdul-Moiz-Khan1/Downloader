@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun DownloadScreen(viewModel: DownloaderViewModel = viewModel()) {
     val progress by viewModel.progress.collectAsState()
+    val chunkProgress by viewModel.chunkProgress.collectAsState()
     val isDownloading by viewModel.isDownloading.collectAsState()
 
     Column(
@@ -19,16 +20,27 @@ fun DownloadScreen(viewModel: DownloaderViewModel = viewModel()) {
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
-        Text("Download Progress: ${(progress * 100).toInt()}%")
-
+        Text("Overall Progress: ${(progress * 100).toInt()}%")
         LinearProgressIndicator(
             progress = progress,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         )
+
+        chunkProgress.forEachIndexed { index, chunk ->
+            Text("Chunk ${index + 1}: ${(chunk * 100).toInt()}%")
+            LinearProgressIndicator(
+                progress = chunk,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
 
         Button(onClick = {
             Log.d("Download", "ButtonClicked")

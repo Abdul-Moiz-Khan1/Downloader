@@ -12,7 +12,8 @@ class Downloader(
     private val context: Context,
     private val downloadUrl: String,
     private val outputFile: File,
-    private val chunkCount: Int = 4
+    private val chunkCount: Int = 4,
+    private val onChunkProgress: (Int, Float) -> Unit
 ) {
     private val chunkJobs = mutableListOf<Job>()
     private var fileSize: Long = 0
@@ -106,6 +107,8 @@ class Downloader(
 
             val totalDownloaded = progressArray.sum()
             val totalProgress = totalDownloaded.toFloat() / fileSize
+            val chunkProgress = downloaded.toFloat() / (end - resumeStart + alreadyDownloaded + 1)
+            onChunkProgress(chunkIndex, chunkProgress)
             onProgress(totalProgress)
         }
 
