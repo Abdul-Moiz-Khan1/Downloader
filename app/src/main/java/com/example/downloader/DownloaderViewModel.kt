@@ -27,7 +27,6 @@ class DownloaderViewModel(application: Application) : AndroidViewModel(applicati
             startDownload()
         }
     }
-
     private fun startDownload() {
         val file = File(getApplication<Application>().filesDir, "largefile.zip")
         val url = "https://r2---sn-npoeenee.gvt1.com/edgedl/android/repository/emulator-windows_x64-9529220.zip?met=1752645931,&mh=Av&pl=22&rms=ltu,ltu&shardbypass=sd&cm2rm=sn-2uja-5ube7z,sn-hjuk76&rrc=80,80&fexp=24352568,24352573,24352574&req_id=1961c7f64d8cbbd9&redirect_counter=2&cms_redirect=yes&cmsv=e&mip=39.60.147.236&mm=34&mn=sn-npoeenee&ms=ltu&mt=1752645651&mv=m&mvi=2&smhost=r1---sn-npoe7nz7.gvt1.com"
